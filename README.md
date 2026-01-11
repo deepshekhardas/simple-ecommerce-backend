@@ -1,71 +1,102 @@
-# Simple E-Commerce Backend
+# Full Stack E-Commerce Platform
 
-A production-ready e-commerce backend built with Node.js, Express, MongoDB, and Stripe.
+A production-ready e-commerce solution featuring a robust Node.js/Express backend and a modern Next.js 14 frontend.
 
-## Features
-- **Authentication**: JWT-based (Access + Refresh Tokens).
-- **Product Management**: CRUD, Search, Filter, Pagination, Soft Deletes.
-- **Cart**: Persistent cart with stock validation and coupon application.
-- **Orders**: Full order lifecycle (Pending -> Confirmed -> Delivered).
-- **Payments**: Stripe PaymentIntents & Webhooks.
-- **Reviews**: Verified purchase reviews.
+<img src="https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=1000" alt="E-Commerce Dashboard" width="100%" />
 
-## Setup Instructions
+## 🚀 Features
 
-### 1. Install Dependencies
-```bash
-npm install
-```
+### Backend (Node.js + MongoDB)
+- **Authentication**: Secure JWT (Access + Refresh Tokens) with Role-Based Access Control (RBAC).
+- **Order Management**: Complete order lifecycle (Pending -> Paid -> Delivered).
+- **Payments**: Integrated Stripe PaymentIntents & Webhooks.
+- **Performance**: MongoDB Indexing, Pagination, and Searching.
 
-### 2. Environment Configuration
-Create a `.env` file in the root directory (copy `.env.example`).
-```bash
-cp .env.example .env
-```
-Update the values:
-- `MONGO_URI`: Your MongoDB connection string.
-- `JWT_SECRET`, `JWT_REFRESH_SECRET`: Secure random strings.
-- `STRIPE_SECRET_KEY`: Your Stripe Test Secret Key.
-- `STRIPE_WEBHOOK_SECRET`: Your Stripe Webhook Secret (from CLI or Dashboard).
+### Frontend (Next.js 14 + Tailwind CSS)
+- **Modern UI**: Glassmorphism design, Framer Motion animations.
+- **Admin Dashboard**: Dedicated portal for product and order management.
+- **Cart System**: Persistent cart state management.
+- **Responsive**: Fully optimized for mobile and desktop.
 
-### 3. Run the Server
-Dev mode:
-```bash
-npm run dev
-```
-Production:
-```bash
-npm start
-```
+---
 
-## Testing Guide
+## 🛠️ Setup Instructions
 
-### 1. Authentication
-- **Signup**: `POST /api/v1/auth/signup` with `{ name, email, password, phone }`.
-- **Login**: `POST /api/v1/auth/login` with `{ email, password }`. Save the `token`.
+### Prerequisites
+- Node.js (v18+)
+- MongoDB (Local or Atlas)
+- Stripe Account (for payments)
 
-### 2. Product Flow
-- **Create (Admin)**: `POST /api/v1/products` (Requires Admin Token).
-- **List**: `GET /api/v1/products?sort=price&limit=10`.
-- **Search**: `GET /api/v1/products?search=phone`.
+### 1. Backend Setup
+The backend is located in the root directory.
 
-### 3. Cart & Order Flow
-1. **Add to Cart**: `POST /api/v1/cart/add` with `{ productId, quantity }`.
-2. **View Cart**: `GET /api/v1/cart`.
-3. **Place Order**: `POST /api/v1/orders` with `{ shippingAddress: {...} }`. Response includes `orderId`.
+1. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+2. **Configure Environment**:
+   Create `.env` using `.env.example` as a template:
+   ```env
+   PORT=3000
+   MONGO_URI=mongodb://localhost:27017/ecommerce
+   JWT_SECRET=your_super_secret_key
+   CLIENT_URL=http://localhost:3001
+   STRIPE_SECRET_KEY=sk_test_...
+   ```
+3. **Seed Database** (Optional but Recommended):
+   Creates default Admin and Products.
+   ```bash
+   npm run data:import
+   ```
+   **Default Credentials:**
+   - **Admin**: `admin@example.com` / `password123`
+   - **User**: `user@example.com` / `password123`
 
-### 4. Payment Flow (Stripe Testing)
-1. **Create Intent**: `POST /api/v1/payment/create-intent` with `{ orderId }`. Returns `clientSecret`.
-2. **Simulate Payment**: Use the `clientSecret` in a frontend or mock the webhook.
-3. **Test Webhook**:
-   - Install Stripe CLI.
-   - Run `stripe listen --forward-to localhost:3000/api/v1/payment/webhook`.
-   - Trigger event: `stripe trigger payment_intent.succeeded`.
+4. **Run Server**:
+   ```bash
+   npm run dev
+   # Server runs on http://localhost:3000
+   ```
 
-## Architecture Decisions
+### 2. Frontend Setup
+The frontend is located in the `frontend/` directory.
 
-- **Service Layer**: Business logic is separated from Controllers to maintain clean code and reusability.
-- **Mongoose**: Used for strict schema validation to ensure data integrity.
-- **Payment Intents**: We use the Intent API (Client Secret) to support SCA.
-- **Cart Expiry**: MongoDB TTL index on `Cart` model cleans up old carts after 30 days.
+1. **Navigate & Install**:
+   ```bash
+   cd frontend
+   npm install
+   ```
+2. **Configure Environment**:
+   Create `frontend/.env.local`:
+   ```env
+   NEXT_PUBLIC_API_URL=http://localhost:3000/api/v1
+   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+   ```
+3. **Run Client**:
+   ```bash
+   npm run dev
+   # Client runs on http://localhost:3001
+   ```
 
+### 3. Accessing the Admin Dashboard
+1. Log in with the Admin credentials (`admin@example.com`).
+2. Navigate to `/admin` (e.g., `http://localhost:3001/admin`).
+3. You will have full access to:
+   - **Manage Products**: Add, Edit, Delete.
+   - **Manage Orders**: View customer orders and update shipping status.
+
+---
+
+## 📦 Deployment
+
+### Backend (Render.com)
+A `render.yaml` file is included for automatic Blueprint deployment.
+1. Connect repo to Render.
+2. Add Environment Variables (MONGO_URI, JWT_SECRET, etc.).
+3. Deploy.
+
+### Frontend (Vercel)
+A `vercel.json` is configured.
+1. Push `frontend` directory to Vercel.
+2. Set `NEXT_PUBLIC_API_URL` to your live Backend URL.
+3. Deploy.
