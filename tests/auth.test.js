@@ -95,4 +95,43 @@ describe('Auth API', () => {
             expect(res.statusCode).toEqual(401);
         });
     });
+
+    describe('POST /api/v1/auth/forgot-password', () => {
+        beforeEach(async () => {
+            await User.create({
+                name: 'Forgot User',
+                email: 'forgot@example.com',
+                password: 'password123',
+                phone: '1111111111'
+            });
+        });
+
+        it('should generate reset token for valid email', async () => {
+            const res = await request(app)
+                .post('/api/v1/auth/forgot-password')
+                .send({ email: 'forgot@example.com' });
+
+            expect(res.statusCode).toEqual(200);
+            expect(res.body.status).toEqual('success');
+            expect(res.body).toHaveProperty('resetUrl');
+        });
+
+        it('should return error for non-existent email', async () => {
+            const res = await request(app)
+                .post('/api/v1/auth/forgot-password')
+                .send({ email: 'nonexistent@example.com' });
+
+            expect(res.statusCode).toEqual(404);
+        });
+    });
+
+    describe('PUT /api/v1/auth/reset-password/:token', () => {
+        it('should return error for invalid token', async () => {
+            const res = await request(app)
+                .put('/api/v1/auth/reset-password/invalidtoken123')
+                .send({ password: 'newpassword123' });
+
+            expect(res.statusCode).toEqual(400);
+        });
+    });
 });

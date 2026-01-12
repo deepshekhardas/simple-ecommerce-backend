@@ -1,15 +1,36 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import api from '@/lib/api';
 import ProductCard from '@/components/features/ProductCard';
-import { Loader2, ArrowRight } from 'lucide-react';
-import { motion } from "framer-motion";
+import { Loader2, ArrowRight, Star, TrendingUp, ShieldCheck, Truck, Clock } from 'lucide-react';
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { Product } from '@/types';
+
+function RevealOnScroll({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-10% 0px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+      transition={{ duration: 0.8, delay, ease: [0.21, 0.47, 0.32, 0.98] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 export default function Home() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 500], [0, 200]);
+
+  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -25,113 +46,199 @@ export default function Home() {
     fetchProducts();
   }, []);
 
+  const features = [
+    { icon: Truck, title: "Global Shipping", description: "Fast, reliable delivery to over 50 countries worldwide.", color: "from-blue-500 to-cyan-500" },
+    { icon: ShieldCheck, title: "Secure Payment", description: "Your transactions are protected by industry-leading encryption.", color: "from-green-500 to-emerald-500" },
+    { icon: Clock, title: "24/7 Support", description: "Our dedicated team is here to assist you anytime, anywhere.", color: "from-purple-500 to-pink-500" },
+    { icon: Star, title: "Premium Quality", description: "Hand-picked products that meet our rigorous quality standards.", color: "from-yellow-500 to-orange-500" }
+  ];
+
   return (
-    <div className="space-y-12 pb-12">
+    <div className="min-h-screen bg-gray-950 overflow-x-hidden selection:bg-purple-500/30">
+
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center bg-midnight text-white px-4 overflow-hidden pt-20">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-30"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-midnight via-midnight/80 to-transparent"></div>
+      <section className="relative h-screen flex items-center justify-center overflow-hidden perspective-1000">
+        {/* Parallax Background */}
+        <motion.div style={{ y: y1 }} className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center scale-110">
+            <div className="absolute inset-0 bg-gray-950/80 backdrop-blur-[2px]"></div>
+          </div>
+        </motion.div>
 
-        <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <span className="text-gold uppercase tracking-[0.2em] text-sm font-bold mb-4 block">New Collection 2024</span>
-            <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6">
-              Shop the <br /><span className="italic text-gold-light">Extraordinary</span>
-            </h1>
-            <p className="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
-              Curated luxury for the modern individual. Elevate your lifestyle with our exclusive selection of premium products.
-            </p>
-          </motion.div>
+        {/* Animated Gradient Orbs */}
+        <motion.div
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 8, repeat: Infinity }}
+          className="absolute top-20 left-[20%] w-[500px] h-[500px] bg-purple-600/30 rounded-full blur-[120px]"
+        />
+        <motion.div
+          animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.4, 0.2] }}
+          transition={{ duration: 10, repeat: Infinity, delay: 1 }}
+          className="absolute bottom-20 right-[20%] w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[120px]"
+        />
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <Link
-              href="/products"
-              className="px-8 py-4 bg-gold text-midnight font-bold rounded-full hover:bg-white transition-all transform hover:scale-105 shadow-xl hover:shadow-gold/20"
+        {/* Hero Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div style={{ opacity }}>
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 mb-8 hover:bg-white/10 transition-colors cursor-default"
             >
-              Explore Collection
-            </Link>
-            <Link
-              href="/about"
-              className="px-8 py-4 border border-white/30 backdrop-blur-sm text-white font-medium rounded-full hover:bg-white/10 transition-all"
+              <TrendingUp className="w-4 h-4 text-yellow-400" />
+              <span className="text-sm font-medium text-yellow-100/90 tracking-[0.2em] uppercase">New Collection 2024</span>
+            </motion.div>
+
+            <div className="overflow-hidden mb-8">
+              <motion.h1
+                initial={{ y: 100 }}
+                animate={{ y: 0 }}
+                transition={{ duration: 1, ease: [0.21, 0.47, 0.32, 0.98] }}
+                className="text-6xl md:text-8xl lg:text-9xl font-bold text-white tracking-tighter"
+              >
+                Redefine{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-gradient-x">
+                  Luxury
+                </span>
+              </motion.h1>
+            </div>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 1 }}
+              className="text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed mb-12"
             >
-              Our Story
-            </Link>
+              Experience the future of e-commerce. Curated products, <br className="hidden md:block" /> seamless shopping, and uncompromising quality.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.8 }}
+              className="flex flex-col sm:flex-row gap-6 justify-center"
+            >
+              <Link href="/products">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-10 py-5 bg-white text-gray-950 font-bold rounded-full shadow-xl shadow-white/10 hover:shadow-white/20 transition-all font-sans"
+                >
+                  Shop Collection
+                </motion.button>
+              </Link>
+              <Link href="/about">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-10 py-5 bg-white/5 backdrop-blur-md border border-white/10 text-white font-bold rounded-full hover:bg-white/10 transition-all"
+                >
+                  Our Story
+                </motion.button>
+              </Link>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* Featured Products */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="text-center mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-midnight dark:text-white mb-4">Featured Selections</h2>
-          <div className="w-24 h-1 bg-gold mx-auto mb-6"></div>
-          <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
-            Handpicked items that define quality and style.
-          </p>
-        </div>
+      <section className="relative z-10 bg-gray-950 py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <RevealOnScroll>
+              <h2 className="text-5xl md:text-6xl font-bold text-white mb-4 tracking-tight">Trending Now</h2>
+              <p className="text-gray-400 text-lg font-light">Handpicked selections just for you</p>
+            </RevealOnScroll>
 
-        {loading ? (
-          <div className="flex justify-center py-20">
-            <Loader2 className="w-10 h-10 animate-spin text-gold" />
+            <RevealOnScroll delay={0.2}>
+              <Link href="/products" className="group flex items-center gap-2 text-white font-medium hover:text-blue-400 transition-colors px-6 py-3 rounded-full hover:bg-white/5">
+                View All Products
+                <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </RevealOnScroll>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {products.map((product, index) => (
-              <motion.div
-                key={product._id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
-          </div>
-        )}
 
-        <div className="text-center mt-16">
-          <Link href="/products" className="inline-flex items-center text-midnight dark:text-white font-bold border-b-2 border-gold pb-1 hover:text-gold transition-colors text-lg group">
-            View All Products <ArrowRight className="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition-transform" />
-          </Link>
+          {loading ? (
+            <div className="flex justify-center py-20">
+              <Loader2 className="w-10 h-10 animate-spin text-purple-500" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {products.map((product, index) => (
+                <RevealOnScroll key={product._id} delay={index * 0.1}>
+                  <ProductCard product={product} />
+                </RevealOnScroll>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section className="bg-cream dark:bg-gray-900 py-24 border-y border-gold/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div className="p-6 bg-white rounded-xl shadow-sm">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Fast Delivery</h3>
-              <p className="text-gray-500">Get your products delivered to your doorstep in no time.</p>
+      {/* Marquee/Benefits Section */}
+      <section className="bg-gray-900 py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-gray-900 to-gray-900"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <RevealOnScroll>
+            <div className="text-center mb-20">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Why Choose ShopHub?</h2>
+              <div className="h-1 w-24 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
             </div>
-            <div className="p-6 bg-white rounded-xl shadow-sm">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-600">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Secure Payment</h3>
-              <p className="text-gray-500">Your transactions are safe with our secure payment processing.</p>
-            </div>
-            <div className="p-6 bg-white rounded-xl shadow-sm">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 text-purple-600">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-              </div>
-              <h3 className="text-lg font-semibold mb-2">24/7 Support</h3>
-              <p className="text-gray-500">Our customer support team is always here to help you.</p>
-            </div>
+          </RevealOnScroll>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <RevealOnScroll key={index} delay={index * 0.1}>
+                <motion.div
+                  whileHover={{ y: -10 }}
+                  className="group relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/5 hover:border-white/10 transition-all duration-300"
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-5 rounded-3xl transition-opacity duration-500`}></div>
+                  <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${feature.color} mb-6 shadow-xl shadow-black/50 group-hover:scale-110 transition-transform duration-500`}>
+                    <feature.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
+                  <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">{feature.description}</p>
+                </motion.div>
+              </RevealOnScroll>
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* Newsletter CTA */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <RevealOnScroll>
+            <div className="relative bg-gradient-to-r from-purple-900/50 to-blue-900/50 rounded-[3rem] p-12 md:p-24 text-center overflow-hidden border border-white/10 backdrop-blur-md">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-[100px] translate-x-1/3 -translate-y-1/3"
+              ></motion.div>
+
+              <div className="relative z-10">
+                <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 tracking-tight">Join the Revolution</h2>
+                <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto font-light">
+                  Sign up for our newsletter and get exclusive access to new drops, special offers, and styling tips.
+                </p>
+                <form className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="px-8 py-5 rounded-full bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 w-full backdrop-blur-sm transition-all focus:bg-white/10"
+                  />
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-10 py-5 bg-white text-purple-950 font-bold rounded-full hover:bg-gray-100 transition-colors shadow-lg shadow-purple-900/20 whitespace-nowrap"
+                  >
+                    Get Access
+                  </motion.button>
+                </form>
+              </div>
+            </div>
+          </RevealOnScroll>
         </div>
       </section>
     </div>

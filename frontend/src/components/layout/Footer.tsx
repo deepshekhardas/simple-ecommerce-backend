@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Footer() {
     return (
         <footer className="bg-gray-900 text-white mt-auto">
@@ -11,18 +13,18 @@ export default function Footer() {
                     <div>
                         <h4 className="font-semibold mb-4">Quick Links</h4>
                         <ul className="space-y-2 text-gray-400">
-                            <li><a href="/products" className="hover:text-white transition">Products</a></li>
-                            <li><a href="/about" className="hover:text-white transition">About</a></li>
-                            <li><a href="/contact" className="hover:text-white transition">Contact</a></li>
+                            <li><Link href="/products" className="hover:text-white transition">Products</Link></li>
+                            <li><Link href="/about" className="hover:text-white transition">About</Link></li>
+                            <li><Link href="/contact" className="hover:text-white transition">Contact</Link></li>
                         </ul>
                     </div>
 
                     <div>
                         <h4 className="font-semibold mb-4">Support</h4>
                         <ul className="space-y-2 text-gray-400">
-                            <li><a href="/help" className="hover:text-white transition">Help Center</a></li>
-                            <li><a href="/terms" className="hover:text-white transition">Terms of Service</a></li>
-                            <li><a href="/privacy" className="hover:text-white transition">Privacy Policy</a></li>
+                            <li><Link href="/help" className="hover:text-white transition">Help Center</Link></li>
+                            <li><Link href="/terms" className="hover:text-white transition">Terms of Service</Link></li>
+                            <li><Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link></li>
                         </ul>
                     </div>
                 </div>

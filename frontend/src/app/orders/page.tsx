@@ -5,8 +5,10 @@ import Link from 'next/link';
 import api from '@/lib/api';
 import { Loader2, Package, ChevronRight } from 'lucide-react';
 
+import { Order } from '@/types';
+
 export default function OrdersPage() {
-    const [orders, setOrders] = useState<any[]>([]);
+    const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

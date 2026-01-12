@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import { Loader2 } from 'lucide-react';
 
+import { AxiosError } from 'axios';
+
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
         name: '',
@@ -30,8 +32,9 @@ export default function RegisterPage() {
         try {
             await register(formData);
             router.push('/');
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Registration failed');
+        } catch (err) {
+            const error = err as AxiosError<{ message: string }>;
+            setError(error.response?.data?.message || 'Registration failed');
         } finally {
             setLoading(false);
         }

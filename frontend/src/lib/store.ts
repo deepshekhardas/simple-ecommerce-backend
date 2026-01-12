@@ -2,12 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import api from './api';
 
-interface User {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-}
+import { CartItem, User } from '@/types';
 
 interface AuthState {
     user: User | null;
@@ -59,13 +54,6 @@ export const useAuthStore = create<AuthState>()(
         }
     )
 );
-
-interface CartItem {
-    product: any;
-    quantity: number;
-    variant?: { size?: string; color?: string };
-    price: number;
-}
 
 interface CartState {
     items: CartItem[];

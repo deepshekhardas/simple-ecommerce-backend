@@ -17,18 +17,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const { user, isAuthenticated, logout } = useAuthStore();
     const router = useRouter();
     const pathname = usePathname();
-    const [mounted, setMounted] = useState(false);
+    const [hasMounted, setHasMounted] = useState(false);
 
     useEffect(() => {
-        setMounted(true);
-        if (!isAuthenticated) {
-            router.push('/login');
-        } else if (user && user.role !== 'admin') {
-            router.push('/');
-        }
-    }, [isAuthenticated, user, router]);
+        setHasMounted(true);
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional one-time init
+    }, []);
 
-    if (!mounted || !user || user.role !== 'admin') {
+    useEffect(() => {
+        if (hasMounted) {
+            if (!isAuthenticated) {
+                router.push('/login');
+            } else if (user && user.role !== 'admin') {
+                router.push('/');
+            }
+        }
+    }, [isAuthenticated, user, router, hasMounted]);
+
+    if (!hasMounted || !user || user.role !== 'admin') {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
                 <Loader2 className="w-8 h-8 animate-spin text-blue-600" />

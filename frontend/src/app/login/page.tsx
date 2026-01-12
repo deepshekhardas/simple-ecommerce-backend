@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store';
 import { Loader2 } from 'lucide-react';
 
+import { AxiosError } from 'axios';
+
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -22,8 +24,9 @@ export default function LoginPage() {
         try {
             await login(email, password);
             router.push('/');
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Login failed');
+        } catch (err) {
+            const error = err as AxiosError<{ message: string }>;
+            setError(error.response?.data?.message || 'Login failed');
         } finally {
             setLoading(false);
         }

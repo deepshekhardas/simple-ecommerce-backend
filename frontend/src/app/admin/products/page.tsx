@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import api from '@/lib/api';
 import { Plus, Edit, Trash2, Search, Loader2 } from 'lucide-react';
 
+import { Product } from '@/types';
+
 export default function AdminProductsPage() {
-    const [products, setProducts] = useState<any[]>([]);
+    const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -95,7 +98,9 @@ export default function AdminProductsPage() {
                                         <div className="flex items-center">
                                             <div className="h-10 w-10 flex-shrink-0 rounded-lg overflow-hidden border bg-gray-100 mr-4">
                                                 {product.images && product.images[0] ? (
-                                                    <img src={product.images[0]} alt="" className="h-full w-full object-cover" />
+                                                    <div className="relative h-full w-full">
+                                                        <Image src={product.images[0]} alt="" fill className="object-cover" />
+                                                    </div>
                                                 ) : (
                                                     <div className="h-full w-full flex items-center justify-center text-xs text-gray-400">No Img</div>
                                                 )}

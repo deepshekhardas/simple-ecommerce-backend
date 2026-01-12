@@ -6,9 +6,11 @@ import api from '@/lib/api';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
+import { Order } from '@/types';
+
 export default function OrderDetailsPage() {
     const { id } = useParams();
-    const [order, setOrder] = useState<any>(null);
+    const [order, setOrder] = useState<Order | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -68,12 +70,12 @@ export default function OrderDetailsPage() {
                     <div>
                         <h3 className="font-semibold text-lg mb-4">Items</h3>
                         <div className="space-y-4">
-                            {order.items.map((item: any, idx: number) => (
+                            {order.items.map((item, idx) => (
                                 <div key={idx} className="flex justify-between items-center py-2 border-b last:border-0">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 bg-gray-100 rounded-md"></div> {/* Placeholder for image if not in order item snapshot */}
                                         <div>
-                                            <p className="font-medium text-gray-900">{item.product?.name || 'Product'}</p>
+                                            <p className="font-medium text-gray-900">{item.name}</p>
                                             <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
                                         </div>
                                     </div>
@@ -87,7 +89,7 @@ export default function OrderDetailsPage() {
                         <div>
                             <h3 className="font-semibold text-gray-900 mb-2">Shipping Address</h3>
                             <div className="text-gray-600 text-sm space-y-1">
-                                <p>{order.shippingAddress.address}</p>
+                                <p>{order.shippingAddress.line1}</p>
                                 <p>{order.shippingAddress.city}, {order.shippingAddress.postalCode}</p>
                                 <p>{order.shippingAddress.country}</p>
                             </div>
@@ -97,7 +99,7 @@ export default function OrderDetailsPage() {
                             <div className="space-y-2 text-sm">
                                 <div className="flex justify-between">
                                     <span className="text-gray-600">Subtotal</span>
-                                    <span>${order.subTotal.toFixed(2)}</span>
+                                    <span>${order.subtotal.toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-gray-600">Tax</span>

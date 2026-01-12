@@ -66,3 +66,42 @@ exports.getMe = catchAsync(async (req, res, next) => {
         },
     });
 });
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+    const { email } = req.body;
+    const clientUrl = req.body.clientUrl || process.env.CLIENT_URL || 'http://localhost:3001';
+
+    const { resetUrl, userEmail } = await authService.forgotPassword(email, clientUrl);
+
+    // In production, send email. For now, log the URL
+    console.log(`Password reset URL for ${userEmail}: ${resetUrl}`);
+
+    res.status(200).json({
+        status: 'success',
+        message: 'Password reset link generated. Check server console for reset URL.',
+        // Remove resetUrl in production - only for demo/testing
+        resetUrl,
+    });
+});
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    const { user, accessToken, refreshToken } = await authService.resetPassword(token, password);
+
+    res.status(200).json({
+        status: 'success',
+        message: 'Password reset successful',
+        token: accessToken,
+        refreshToken,
+        data: {
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            },
+        },
+    });
+});

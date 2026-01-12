@@ -8,7 +8,7 @@ exports.createProduct = async (productData) => {
 exports.getProducts = async (query) => {
     // 1) Filtering
     const queryObj = { ...query };
-    const excludedFields = ['page', 'sort', 'limit', 'fields', 'search'];
+    const excludedFields = ['page', 'sort', 'limit', 'fields', 'search', 'minPrice', 'maxPrice', 'minRating'];
     excludedFields.forEach(el => delete queryObj[el]);
 
     // Advanced filtering: gte, gt, lte, lt
@@ -20,6 +20,18 @@ exports.getProducts = async (query) => {
     // Text search
     if (query.search) {
         filter.$text = { $search: query.search };
+    }
+
+    // Price range filter
+    if (query.minPrice || query.maxPrice) {
+        filter.price = {};
+        if (query.minPrice) filter.price.$gte = Number(query.minPrice);
+        if (query.maxPrice) filter.price.$lte = Number(query.maxPrice);
+    }
+
+    // Rating filter
+    if (query.minRating) {
+        filter.averageRating = { $gte: Number(query.minRating) };
     }
 
     let mongooseQuery = Product.find(filter);

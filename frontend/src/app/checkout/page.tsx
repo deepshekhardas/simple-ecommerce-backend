@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuthStore, useCartStore } from '@/lib/store';
+import { useCartStore } from '@/lib/store';
 import api from '@/lib/api';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
@@ -11,8 +11,8 @@ import { Loader2 } from 'lucide-react';
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_test_placeholder');
 
 export default function CheckoutPage() {
-    const { user } = useAuthStore();
     const { items, totalAmount } = useCartStore();
+
     const [clientSecret, setClientSecret] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [step, setStep] = useState(1); // 1: Address, 2: Payment
@@ -45,9 +45,10 @@ export default function CheckoutPage() {
 
             setClientSecret(paymentRes.data.clientSecret);
             setStep(2);
-        } catch (error: Error | any) {
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string } } };
             console.error('Checkout failed', error);
-            alert(error.response?.data?.message || 'Failed to process checkout. Please try again.');
+            alert(err.response?.data?.message || 'Failed to process checkout. Please try again.');
         } finally {
             setLoading(false);
         }

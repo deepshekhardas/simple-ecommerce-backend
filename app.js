@@ -15,37 +15,46 @@ const couponRoutes = require('./routes/couponRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 
+const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const hpp = require('hpp');
 const app = express();
 
 // Middleware
 app.use(helmet()); // Security headers
 app.use(cors({ origin: config.clientUrl })); // CORS
+
 if (config.env === 'development') {
     app.use(morgan('dev')); // Logging
 }
 
-// Stripe webhook requires raw body, handled in paymentRoutes or here.
-// Since we used express.raw in the specific route in paymentRoutes, 
-// we must ensure standard express.json() doesn't consume it globally first IF the path matches.
-// However, mounting routes works sequentially.
-// If we mount paymentRoutes BEFORE express.json(), the specific webhook route (if it uses express.raw) will work.
-// But paymentRoutes also has JSON endpoints. 
-// Best practice: Mount webhook specifically/separately or use a conditional parser.
-// We will mount paymentRoutes specific webhook route separately or ensure order.
-// In our paymentRoutes.js, we defined `router.post('/webhook', express.raw...)`.
-// Express routers are isolated. So if we mount `app.use('/api/v1/payment', paymentRoutes)`,
-// and `paymentRoutes` has the webhook, `app.use(express.json())` at top level will parse it first if it matches.
-// To fix: Put webhook route setup BEFORE global json parser OR use a parser that ignores that path.
-// The easiest for this setup is to use a middleware that checks path.
+// Rate Limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again in 15 minutes'
+});
+app.use('/api', limiter);
 
+// Stripe webhook handling (bypass JSON parser)
 app.use((req, res, next) => {
     if (req.originalUrl === '/api/v1/payment/webhook') {
         next();
     } else {
-        express.json()(req, res, next);
+        express.json({ limit: '10kb' })(req, res, next);
     }
 });
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// Data Sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+// Data Sanitization against XSS
+app.use(xss());
+
+// Prevent Parameter Pollution
+app.use(hpp());
 
 // Routes Mounting
 app.use('/api/v1/auth', authRoutes);

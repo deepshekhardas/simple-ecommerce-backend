@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { Loader2, Package, CheckCircle, XCircle, Clock } from 'lucide-react';
 
+import { Order } from '@/types';
+
 export default function AdminOrdersPage() {
-    const [orders, setOrders] = useState<any[]>([]);
+    const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
 
     const fetchOrders = async () => {

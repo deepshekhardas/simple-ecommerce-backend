@@ -7,9 +7,11 @@ import api from '@/lib/api';
 import { useCartStore } from '@/lib/store';
 import { Loader2, Star, Minus, Plus, ShoppingCart } from 'lucide-react';
 
+import { Product } from '@/types';
+
 export default function ProductDetailsPage() {
     const { id } = useParams();
-    const [product, setProduct] = useState<any>(null);
+    const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(1);
     const { addItem } = useCartStore();
@@ -79,11 +81,11 @@ export default function ProductDetailsPage() {
                             {[...Array(5)].map((_, i) => (
                                 <Star
                                     key={i}
-                                    className={`w-5 h-5 ${i < Math.floor(product.ratingsAverage || 0) ? 'fill-current' : 'text-gray-300'}`}
+                                    className={`w-5 h-5 ${i < Math.floor(product.averageRating || 0) ? 'fill-current' : 'text-gray-300'}`}
                                 />
                             ))}
                         </div>
-                        <span className="text-gray-500 text-sm">({product.ratingsQuantity || 0} reviews)</span>
+                        <span className="text-gray-500 text-sm">({product.numOfReviews || 0} reviews)</span>
                     </div>
 
                     <div className="text-3xl font-bold text-gray-900 mb-6">${product.price}</div>

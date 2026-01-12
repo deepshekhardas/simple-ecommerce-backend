@@ -67,3 +67,49 @@ exports.refreshToken = async (refreshToken) => {
 
     return { accessToken };
 };
+
+exports.forgotPassword = async (email, clientUrl) => {
+    const user = await User.findOne({ email });
+    if (!user) {
+        throw new AppError('No user found with that email', 404);
+    }
+
+    // Generate reset token
+    const resetToken = user.getResetPasswordToken();
+    await user.save({ validateBeforeSave: false });
+
+    // Create reset URL
+    const resetUrl = `${clientUrl}/reset-password/${resetToken}`;
+
+    return { resetToken, resetUrl, userEmail: user.email };
+};
+
+exports.resetPassword = async (token, newPassword) => {
+    const crypto = require('crypto');
+
+    // Hash the token from URL
+    const hashedToken = crypto
+        .createHash('sha256')
+        .update(token)
+        .digest('hex');
+
+    // Find user with valid token
+    const user = await User.findOne({
+        resetPasswordToken: hashedToken,
+        resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+        throw new AppError('Invalid or expired reset token', 400);
+    }
+
+    // Set new password
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    // Create new tokens
+    const tokens = createTokens(user);
+    return { user, ...tokens };
+};
