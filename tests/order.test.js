@@ -6,20 +6,18 @@ const Product = require('../models/Product');
 const Cart = require('../models/Cart');
 const Order = require('../models/Order');
 
+const db = require('./test_db');
+
 beforeAll(async () => {
-    const testDbUri = 'mongodb://localhost:27017/ecommerce_test_db';
-    await mongoose.connect(testDbUri);
+    await db.connect();
 });
 
 afterEach(async () => {
-    await Order.deleteMany({});
-    await Cart.deleteMany({});
-    await Product.deleteMany({});
-    await User.deleteMany({});
+    await db.clear();
 });
 
 afterAll(async () => {
-    await mongoose.connection.close();
+    await db.close();
 });
 
 describe('Order API', () => {

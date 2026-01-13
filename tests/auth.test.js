@@ -1,22 +1,28 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
+
+// Mock email service
+jest.mock('../services/emailService', () => jest.fn().mockResolvedValue(true));
+
 const app = require('../app');
 const User = require('../models/User');
 
 // Connect to a separate test database
+const db = require('./test_db');
+
+// Connect to a separate test database
 beforeAll(async () => {
-    const testDbUri = 'mongodb://localhost:27017/ecommerce_test_db';
-    await mongoose.connect(testDbUri);
+    await db.connect();
 });
 
 // Clean up database after each test
 afterEach(async () => {
-    await User.deleteMany({});
+    await db.clear();
 });
 
 // Close connection after all tests
 afterAll(async () => {
-    await mongoose.connection.close();
+    await db.close();
 });
 
 describe('Auth API', () => {
@@ -113,7 +119,7 @@ describe('Auth API', () => {
 
             expect(res.statusCode).toEqual(200);
             expect(res.body.status).toEqual('success');
-            expect(res.body).toHaveProperty('resetUrl');
+            expect(res.body.message).toEqual('Token sent to email!');
         });
 
         it('should return error for non-existent email', async () => {

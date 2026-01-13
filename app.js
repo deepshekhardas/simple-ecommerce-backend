@@ -62,6 +62,7 @@ app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/cart', cartRoutes);
 app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/coupons', couponRoutes);
+app.use('/api/v1/stats', require('./routes/statsRoutes'));
 app.use('/api/v1/payment', paymentRoutes);
 app.use('/api/v1/reviews', reviewRoutes); // Standalone reviews
 // We also want reviews under products: /products/:productId/reviews
@@ -77,6 +78,8 @@ app.get('/', (req, res) => {
         documentation: '/README.md'
     });
 });
+
+app.use('/api/v1/wishlist', require('./routes/wishlistRoutes'));
 
 // 404 Handler
 app.all('*', (req, res, next) => {

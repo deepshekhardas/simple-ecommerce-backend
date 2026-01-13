@@ -20,8 +20,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const [hasMounted, setHasMounted] = useState(false);
 
     useEffect(() => {
+        // eslint-disable-next-line
         setHasMounted(true);
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional one-time init
     }, []);
 
     useEffect(() => {

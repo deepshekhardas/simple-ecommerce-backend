@@ -1,5 +1,7 @@
 const authService = require('../services/authService');
 const catchAsync = require('../utils/catchAsync');
+const { sendEmail } = require('../services/emailService');
+const AppError = require('../utils/AppError');
 
 exports.register = catchAsync(async (req, res, next) => {
     const { user, accessToken, refreshToken } = await authService.register(req.body);
@@ -73,15 +75,22 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
     const { resetUrl, userEmail } = await authService.forgotPassword(email, clientUrl);
 
-    // In production, send email. For now, log the URL
-    console.log(`Password reset URL for ${userEmail}: ${resetUrl}`);
+    const message = `Forgot your password? Submit a request with your new password to: ${resetUrl}.\nIf you didn't forget your password, please ignore this email!`;
 
-    res.status(200).json({
-        status: 'success',
-        message: 'Password reset link generated. Check server console for reset URL.',
-        // Remove resetUrl in production - only for demo/testing
-        resetUrl,
-    });
+    try {
+        await sendEmail({
+            email: userEmail,
+            subject: 'Your password reset token (valid for 10 min)',
+            message,
+        });
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Token sent to email!',
+        });
+    } catch (err) {
+        return next(new AppError('There was an error sending the email. Try again later!', 500));
+    }
 });
 
 exports.resetPassword = catchAsync(async (req, res, next) => {

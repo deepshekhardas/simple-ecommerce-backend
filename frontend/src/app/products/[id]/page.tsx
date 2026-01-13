@@ -6,6 +6,8 @@ import Image from 'next/image';
 import api from '@/lib/api';
 import { useCartStore } from '@/lib/store';
 import { Loader2, Star, Minus, Plus, ShoppingCart } from 'lucide-react';
+import ReviewList from '@/components/features/ReviewList';
+import ReviewForm from '@/components/features/ReviewForm';
 
 import { Product } from '@/types';
 
@@ -14,6 +16,7 @@ export default function ProductDetailsPage() {
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(1);
+    const [refreshReviews, setRefreshReviews] = useState(0);
     const { addItem } = useCartStore();
 
     useEffect(() => {
@@ -122,6 +125,19 @@ export default function ProductDetailsPage() {
                         <ShoppingCart className="w-6 h-6" />
                         Add to Cart
                     </button>
+                </div>
+            </div>
+
+            {/* Reviews Section */}
+            <div className="mt-16 border-t border-gray-200 dark:border-gray-700 pt-12">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Customer Reviews</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div>
+                        <ReviewList productId={id as string} refreshTrigger={refreshReviews} />
+                    </div>
+                    <div>
+                        <ReviewForm productId={id as string} onReviewAdded={() => setRefreshReviews(prev => prev + 1)} />
+                    </div>
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@ import { ShoppingCart, Heart, Eye, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCartStore } from '@/lib/store';
+import api from '@/lib/api';
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { Product } from '@/types';
 
@@ -20,6 +21,22 @@ export default function ProductCard({ product }: { product: Product }) {
             price: product.price,
             variant: product.variants?.[0]
         });
+    };
+
+    const toggleWishlist = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        try {
+            await api.post('/wishlist', { productId: product._id });
+            alert('Added to wishlist!');
+        } catch (error: any) {
+            if (error.response?.data?.message === 'Product already in wishlist') {
+                // Optimization: Could call delete here to toggle
+                alert('Already in wishlist');
+            } else {
+                alert('Failed to add to wishlist');
+            }
+        }
     };
 
     function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
@@ -66,6 +83,7 @@ export default function ProductCard({ product }: { product: Product }) {
                         <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
+                            onClick={toggleWishlist}
                             className="p-3 bg-white/10 backdrop-blur-xl border border-white/20 text-white rounded-full hover:bg-white hover:text-red-500 transition-colors shadow-lg"
                         >
                             <Heart className="w-5 h-5" />

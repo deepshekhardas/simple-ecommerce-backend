@@ -7,7 +7,10 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
     let filter = {};
     if (req.params.productId) filter = { product: req.params.productId };
 
-    const reviews = await Review.find(filter);
+    const reviews = await Review.find(filter).populate({
+        path: 'user',
+        select: 'name'
+    });
     res.status(200).json({
         status: 'success',
         results: reviews.length,
