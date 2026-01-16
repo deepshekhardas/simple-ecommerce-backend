@@ -1,0 +1,265 @@
+﻿
+> simple-ecommerce-backend@1.0.0 test
+> jest --detectOpenHandles --runInBand
+
+node.exe : FAIL tests/auth.test.js (9.418 s)
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (FAIL tests/ 
+   auth.test.js (9.418 s):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  Auth API
+    POST /api/v1/auth/signup
+      ΓêÜ should register a new user (1021 ms)
+      ΓêÜ should not register user with existing email 
+(251 ms)
+    POST /api/v1/auth/login
+      ΓêÜ should login with correct credentials (423 ms)
+      ΓêÜ should not login with incorrect password (390 
+ms)
+    POST /api/v1/auth/forgot-password
+      ├ù should generate reset token for valid email 
+(283 ms)
+      ΓêÜ should return error for non-existent email 
+(224 ms)
+    PUT /api/v1/auth/reset-password/:token
+      ΓêÜ should return error for invalid token (67 ms)
+
+  ΓùÅ Auth API ΓÇ║ POST /api/v1/auth/forgot-password ΓÇ║ 
+should generate reset token for valid email
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: 200
+    Received: 500
+
+    [0m [90m 118 |[39m                 
+[33m.[39msend({ email[33m:[39m 
+[32m'forgot@example.com'[39m })[33m;[39m
+     [90m 119 |[39m
+    [31m[1m>[22m[39m[90m 120 |[39m             expe
+ct(res[33m.[39mstatusCode)[33m.[39mtoEqual([35m200[
+39m)[33m;[39m
+     [90m     |[39m                                    
+[31m[1m^[22m[39m
+     [90m 121 |[39m             expect(res[33m.[39mbo
+dy[33m.[39mstatus)[33m.[39mtoEqual([32m'success'[39
+m)[33m;[39m
+     [90m 122 |[39m             expect(res[33m.[39mbo
+dy[33m.[39mmessage)[33m.[39mtoEqual([32m'Token sent 
+to email!'[39m)[33m;[39m
+     [90m 123 |[39m         })[33m;[39m[0m
+
+      at Object.toEqual (tests/auth.test.js:120:36)
+
+  console.error
+    Failed to send order email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+    535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2a3e3cc8803sm245916305ad.71 - gsmtp
+        at SMTPConnection._formatError (C:\Users\hp\Desktop\A\node_modules\nodemailer\lib\smtp-connection\index.js:809:19)
+        at SMTPConnection._actionAUTHComplete (C:\Users\hp\Desktop\A\node_modules\nodemailer\lib\smtp-connection\index.js:1588:34)
+        at SMTPConnection.<anonymous> (C:\Users\hp\Desktop\A\node_modules\nodemailer\lib\smtp-connection\index.js:556:26)
+        at SMTPConnection._processResponse (C:\Users\hp\Desktop\A\node_modules\nodemailer\lib\smtp-connection\index.js:993:20)
+        at SMTPConnection._onData (C:\Users\hp\Desktop\A\node_modules\nodemailer\lib\smtp-connection\index.js:774:14)
+        at TLSSocket.SMTPConnection._onSocketData (C:\Users\hp\Desktop\A\node_modules\nodemailer\lib\smtp-connection\index.js:195:44)
+        at TLSSocket.emit (node:events:508:28)
+        at addChunk (node:internal/streams/readable:559:12)
+        at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+        at TLSSocket.Readable.push (node:internal/streams/readable:390:5)
+        at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23) {
+      code: 'EAUTH',
+      response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+        '535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2a3e3cc8803sm245916305ad.71 - gsmtp',
+      responseCode: 535,
+      command: 'AUTH PLAIN'
+    }
+
+    [0m [90m 18 |[39m         })[33m;[39m
+     [90m 19 |[39m     } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 20 |[39m         console[33m.[39merror([32m'Failed to send order email:'[39m[33m,[39m err)[33m;[39m
+     [90m    |[39m                 [31m[1m^[22m[39m
+     [90m 21 |[39m         [90m// Don't fail the order just because email failed[39m
+     [90m 22 |[39m     }
+     [90m 23 |[39m[0m
+
+      at error (controllers/orderController.js:20:17)
+
+  console.error
+    Failed to send order email: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+    535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-81f8e6c26basm1723660b3a.69 - gsmtp
+        at SMTPConnection._formatError (C:\Users\hp\Desktop\A\node_modules\nodemailer\lib\smtp-connection\index.js:809:19)
+        at SMTPConnection._actionAUTHComplete (C:\Users\hp\Desktop\A\node_modules\nodemailer\lib\smtp-connection\index.js:1588:34)
+        at SMTPConnection.<anonymous> (C:\Users\hp\Desktop\A\node_modules\nodemailer\lib\smtp-connection\index.js:556:26)
+        at SMTPConnection._processResponse (C:\Users\hp\Desktop\A\node_modules\nodemailer\lib\smtp-connection\index.js:993:20)
+        at SMTPConnection._onData (C:\Users\hp\Desktop\A\node_modules\nodemailer\lib\smtp-connection\index.js:774:14)
+        at TLSSocket.SMTPConnection._onSocketData (C:\Users\hp\Desktop\A\node_modules\nodemailer\lib\smtp-connection\index.js:195:44)
+        at TLSSocket.emit (node:events:508:28)
+        at addChunk (node:internal/streams/readable:559:12)
+        at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+        at TLSSocket.Readable.push (node:internal/streams/readable:390:5)
+        at TLSWrap.onStreamRead (node:internal/stream_base_commons:189:23) {
+      code: 'EAUTH',
+      response: '535-5.7.8 Username and Password not accepted. For more information, go to\n' +
+        '535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-81f8e6c26basm1723660b3a.69 - gsmtp',
+      responseCode: 535,
+      command: 'AUTH PLAIN'
+    }
+
+    [0m [90m 18 |[39m         })[33m;[39m
+     [90m 19 |[39m     } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 20 |[39m         console[33m.[39merror([32m'Failed to send order email:'[39m[33m,[39m err)[33m;[39m
+     [90m    |[39m                 [31m[1m^[22m[39m
+     [90m 21 |[39m         [90m// Don't fail the order just because email failed[39m
+     [90m 22 |[39m     }
+     [90m 23 |[39m[0m
+
+      at error (controllers/orderController.js:20:17)
+
+FAIL tests/order.test.js (10.796 s)
+  Order API
+    POST /api/v1/orders
+      ├ù should create an order from cart (5646 ms)
+    GET /api/v1/orders/my-orders
+      ΓêÜ should get user orders (2354 ms)
+
+  ΓùÅ Order API ΓÇ║ POST /api/v1/orders ΓÇ║ should 
+create an order from cart
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the 
+timeout, if this is a long-running test. See 
+https://jestjs.io/docs/api#testname-fn-timeout."
+
+    [0m [90m 58 |[39m
+     [90m 59 |[39m     describe([32m'POST 
+/api/v1/orders'[39m[33m,[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 60 |[39m         
+it([32m'should create an order from 
+cart'[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m    |[39m         [31m[1m^[22m[39m
+     [90m 61 |[39m             [36mconst[39m res 
+[33m=[39m [36mawait[39m request(app)
+     [90m 62 |[39m                 
+[33m.[39mpost([32m'/api/v1/orders'[39m)
+     [90m 63 |[39m                 [33m.[39m[36mset
+[39m([32m'Authorization'[39m[33m,[39m [32m`Bearer 
+${token}`[39m)[0m
+
+      at it (tests/order.test.js:60:9)
+      at describe (tests/order.test.js:59:5)
+      at Object.describe (tests/order.test.js:23:1)
+
+PASS tests/features.test.js (7.558 s)
+  New Features Integration
+    Wishlist
+      ΓêÜ should add product to wishlist (997 ms)
+      ΓêÜ should remove product from wishlist (810 ms)
+    Analytics
+      ΓêÜ should get dashboard stats as admin (883 ms)
+      ΓêÜ should forbid non-admin from stats (755 ms)
+    Reviews
+      ΓêÜ should allow review only for verified purchase 
+(858 ms)
+      ΓêÜ should allow review after purchase (DELIVERED) 
+(820 ms)
+
+PASS tests/product.test.js (5.673 s)
+  Product API
+    POST /api/v1/products
+      ΓêÜ should create a product if admin (851 ms)
+      ΓêÜ should not create a product if not admin (618 
+ms)
+    GET /api/v1/products
+      ΓêÜ should get all products (688 ms)
+    GET /api/v1/products/:id
+      ΓêÜ should get a single product (614 ms)
+
+PASS luxchat-test/tests/services/messageService.test.js
+  MessageService
+    sendMessage
+      ΓêÜ should send a direct message successfully (6 
+ms)
+      ΓêÜ should send a group message successfully (3 ms)
+      ΓêÜ should throw error if group not found (17 ms)
+      ΓêÜ should throw error if user is not a group 
+member (3 ms)
+      ΓêÜ should throw error if conversation not found 
+(2 ms)
+    getMessages
+      ΓêÜ should return messages for a conversation (4 
+ms)
+      ΓêÜ should return messages for a group (2 ms)
+    markAsRead
+      ΓêÜ should mark messages as read and reset unread 
+count (3 ms)
+
+PASS tests/enterprise_features.test.js
+  Enterprise Features Integration
+    Email Notifications
+      ΓêÜ should send email on order creation (796 ms)
+    PDF Invoicing
+      ΓêÜ should download invoice PDF (1040 ms)
+
+PASS tests/cart.test.js
+  Cart API
+    POST /api/v1/cart/add
+      ΓêÜ should add item to cart (487 ms)
+      ΓêÜ should fail if unauthenticated (280 ms)
+    GET /api/v1/cart
+      ΓêÜ should get user cart (373 ms)
+      ΓêÜ should return empty/null if no cart (275 ms)
+
+PASS luxchat-test/tests/services/authService.test.js
+  AuthService
+    register
+      ΓêÜ should register a new user successfully (4 ms)
+      ΓêÜ should throw error if user already exists (12 
+ms)
+    login
+      ΓêÜ should login successfully with valid 
+credentials (3 ms)
+      ΓêÜ should throw error if user not found (3 ms)
+      ΓêÜ should throw error if password does not match 
+(2 ms)
+    logout
+      ΓêÜ should update user status to offline (4 ms)
+      ΓêÜ should return true even if user not found (2 
+ms)
+
+PASS luxchat-test/tests/health.test.js
+  Server Health Check
+    ΓêÜ should return 200 OK (58 ms)
+
+PASS 
+luxchat-test/tests/services/conversationService.test.js
+  ConversationService
+    getConversations
+      ΓêÜ should return all conversations for a user (4 
+ms)
+      ΓêÜ should return empty array if no conversations 
+exist (3 ms)
+    getOrCreateConversation
+      ΓêÜ should return existing conversation if found 
+(2 ms)
+      ΓêÜ should create new conversation if not found (3 
+ms)
+
+PASS luxchat-test/tests/services/userService.test.js
+  UserService
+    searchUsers
+      ΓêÜ should return users matching the keyword 
+excluding current user (4 ms)
+      ΓêÜ should return empty list if query is empty (2 
+ms)
+    getUserProfile
+      ΓêÜ should return user if found (2 ms)
+      ΓêÜ should throw error if user not found (9 ms)
+
+Test Suites: 2 failed, 9 passed, 11 total
+Tests:       2 failed, 47 passed, 49 total
+Snapshots:   0 total
+Time:        46.99 s, estimated 68 s
+Ran all test suites.

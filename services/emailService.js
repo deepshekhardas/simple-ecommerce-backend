@@ -3,13 +3,31 @@ const config = require('../config/env');
 
 const sendEmail = async (options) => {
     // 1) Create a transporter
-    const transporter = nodemailer.createTransport({
-        service: config.email.service, // e.g., 'gmail'
-        auth: {
-            user: config.email.user,
-            pass: config.email.pass,
-        },
-    });
+    let transportConfig;
+
+    // Support for custom SMTP host (for educational/enterprise emails)
+    if (config.email.host) {
+        transportConfig = {
+            host: config.email.host,
+            port: config.email.port || 587,
+            secure: config.email.secure || false,
+            auth: {
+                user: config.email.user,
+                pass: config.email.pass,
+            },
+        };
+    } else {
+        // Default: use service name (gmail, etc.)
+        transportConfig = {
+            service: config.email.service, // e.g., 'gmail'
+            auth: {
+                user: config.email.user,
+                pass: config.email.pass,
+            },
+        };
+    }
+
+    const transporter = nodemailer.createTransport(transportConfig);
 
     // 2) Define the email options
     const mailOptions = {
