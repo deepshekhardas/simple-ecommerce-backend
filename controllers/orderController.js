@@ -1,5 +1,6 @@
 const orderService = require('../services/orderService');
 const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/AppError');
 const { sendOrderEmail } = require('../services/emailService');
 
 exports.createOrder = catchAsync(async (req, res, next) => {

@@ -2,7 +2,10 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 
 // Mock email service
-jest.mock('../services/emailService', () => jest.fn().mockResolvedValue(true));
+jest.mock('../services/emailService', () => ({
+    sendEmail: jest.fn().mockResolvedValue(true),
+    sendOrderEmail: jest.fn().mockResolvedValue(true)
+}));
 
 const app = require('../app');
 const User = require('../models/User');

@@ -6,6 +6,15 @@ const Product = require('../models/Product');
 const Cart = require('../models/Cart');
 const Order = require('../models/Order');
 
+// Mock email service to prevent actual emails during tests
+jest.mock('../services/emailService', () => ({
+    sendEmail: jest.fn().mockResolvedValue(true),
+    sendOrderEmail: jest.fn().mockResolvedValue(true)
+}));
+
+// Increase Jest timeout for async operations
+jest.setTimeout(15000);
+
 const db = require('./test_db');
 
 beforeAll(async () => {
