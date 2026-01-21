@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// Use local IP for Android emulator (10.0.2.2) or machine IP for physical device
-// Replace with your machine's local IP address, e.g., http://192.168.1.5:3000/api/v1
-const API_URL = 'http://10.0.2.2:3000/api/v1';
+// Production Render Backend URL
+const API_URL = 'https://simple-ecommerce-backend-1.onrender.com/api/v1';
+// const API_URL = 'http://10.0.2.2:3000/api/v1'; // Local Emulator
 
 const api = axios.create({
     baseURL: API_URL,
