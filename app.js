@@ -23,7 +23,29 @@ const app = express();
 
 // Middleware
 app.use(helmet()); // Security headers
-app.use(cors({ origin: config.clientUrl })); // CORS
+
+// CORS Configuration - Allow multiple origins
+const allowedOrigins = [
+    'http://localhost:3001',
+    'http://localhost:3000',
+    'https://simple-ecommerce-backend-three.vercel.app',
+    config.clientUrl
+].filter(Boolean);
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (mobile apps, curl, etc.)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(null, true); // Allow all for now, restrict later in production
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 if (config.env === 'development') {
     app.use(morgan('dev')); // Logging
