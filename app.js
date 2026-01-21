@@ -103,12 +103,14 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1/wishlist', require('./routes/wishlistRoutes'));
 
-// 404 Handler
-app.all('*', (req, res, next) => {
-    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
-});
+const setupErrorHandlers = (app) => {
+    // 404 Handler
+    app.all('*', (req, res, next) => {
+        next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+    });
 
-// Global Error Handler
-app.use(errorHandler);
+    // Global Error Handler
+    app.use(errorHandler);
+};
 
-module.exports = app;
+module.exports = { app, setupErrorHandlers };
